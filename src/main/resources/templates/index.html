@@ -1,0 +1,236 @@
+<html>
+<head>
+    <title>City name autocomplete:)</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.2.1/lux/bootstrap.min.css" rel="stylesheet" integrity="sha384-kW2H6mf/72/MKlmwB//Zcwg0ckiegojPx/fio14/rpoYw2LMhULTn5YhS1QyrQfx" crossorigin="anonymous">
+
+    <style>
+    p {
+        color: black;!important;
+    }
+    .topic {
+        text-align: justify;
+        margin: 15px;
+        margin-bottom: 25px;
+    }
+    p a {
+        font-style: italic;
+        text-decoration: underline;
+    }
+    pre {
+        color: darkgreen;
+        margin-bottom: 2px;
+    }
+    #usage pre{
+        color: black;
+    }
+    comment {
+        color: yellowgreen;
+        font-style: italic;
+        font-family: monospace;
+    }
+    .center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 50%;
+    }
+    .failing {
+        color: red;
+    }
+    .passing {
+        color: green;
+    }
+    h3, h4 {
+        margin-top: 10px
+    }
+</style>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">City Name Autocomplete</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Application Docs <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/swagger-ui.html">API Docs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/veken1199/City-Names-Autocomplete">Source code</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="http://www.linkedin.com/in/fekenbaboyan">About Me</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- Navbar ends -->
+
+<!-- About the app tabs -->
+<div class="topic">
+    <h3>About the app</h3>
+    <p>This web application is built on Spring boot using Java 8 and Gradle. One of reasons for choosing
+        <b class="lead text-danger">Spring boot</b> and <b class="lead text-danger">Java 8</b>
+        is the fact that I wanted to build something from scratch using this technology and
+        to go through the challenges of the basic setup of the application, testing, and deployment configuration.
+        The application uses <b class="lead text-danger">Swagger UI</b> to provide developers an easy access
+        to the REST controllers supported by this application. You can access the swagger ui from <a href="/swagger-ui.html">API docs </a>.
+    </p>
+    <p>
+        Further more, the app has been containerized and published on <a href="https://cloud.docker.com/u/feken/repository/docker/feken/dockerized-city-autocomplete">the repository</a>
+        , and also deployed on a remote <b class="lead text-danger">Heroku</b>
+        <a href="https://city-name-autocomplete-2019.herokuapp.com">machine</a>, It should be running now :)
+    </p>
+    </br>
+    <p><a href="https://city-name-autocomplete-2019.herokuapp.com/">Try Live!</a></p>
+</div>
+<!-- About the app ends -->
+
+<!-- Features tabs -->
+<div class="topic">
+    <h3>Features List</h3>
+    <ul>
+        <li>
+            <p>The Api accepts string query as city name. It uses Levenshtein algorithm by default</p>
+        </li>
+        <li>
+            <p>The Api accepts Longitude and Latitude to return more relative responses. It uses Haversine distance</p>
+        </li>
+        <li>
+            <p>The Api could return result of a specified minimum score</p>
+        </li>
+        <li>
+            <p>The Api could limit the number of the results</p>
+        </li>
+        <li>
+            <p>On this application go to <a href="/swagger-ui">API Docs</a> to see full list of endpoints</p>
+        </li>
+        <li>
+            <p>From <b>similarityAlgo</b> GET param you can choose between 2 different string similarity algorithms.
+                To use JaroWinkler algo, send <b>similarityAlgo=Jaro</b> </p>
+        </li>
+    </ul>
+</div>
+<!-- Features end -->
+<!-- Run the tests -->
+<div class="topic">
+    <h3>Usage</h3>
+    <pre>GET http://localhost:3112/suggestion?q=Queb&minScore=0.5&latitude=46.81228&longitude=46.81228&similarityAlgo=Jaro&limit=6 </pre>
+    <p> Request Params : </p>
+    <pre>
+        q: String representing search query
+        limit: Integer representing the number suggestions in the response
+        latitude: Lat geolocation to improve suggestions. Should be sent with Longitude
+        longitude: Long geolocation to improve suggestions. Should be sent with Latitude
+        minScore: Double between 1 and 0 to set the min score for suggestions returned
+        similarityAlgo: Similarity algorithm to be used, Levenshtein will be used by default. Send "Jaro"
+                        to use Jaro Winkler Algo.
+    </pre>
+
+    <p>Response: </p>
+    <pre>
+        {
+        "suggestions": [
+            {
+                "name": "Québec, QC, Canada",
+                "latitude": 46.81228,
+                "longitude": 46.81228,
+                "score": 1
+            },
+            {
+                "name": "Hoquiam, WA, USA",
+                "latitude": 46.98092,
+                "longitude": 46.98092,
+                "score": 0.895
+            }],
+        "status": "200",
+        "message": "Operation succeeded"
+        }
+    </pre>
+
+    <p> Another example </p>
+    <pre>GET http://localhost:3112/suggestion?q=Queb&minScore=100000&latitude=10000</pre>
+    <p>Response : </p>
+    <pre>
+        {
+            "status": "400",
+            "message": "Operation failed",
+            "error": [
+                "minScore: minScore should be between 0 and 1",
+                "longitude: Longitude value must be between -180 to 180."
+                ]
+        }
+    </pre>
+    <h5>Visit <b class="text-danger"><a href="/swagger-ui.html">API docs </a></b> for more details</h5>
+</div>
+<!-- Run the tests end here -->
+
+<!-- Build and run -->
+<div class="topic">
+    <h3>How to build and run</h3>
+    <p>I have based my work on Java 8</p>
+    <ul>
+        <li>
+            <h4>Using Gradle</h4>
+            <comment>// Build the app</comment>
+            <pre>gradlew build</pre>
+
+            <comment>// Run the app</comment>
+            <pre>java -jar build/libs/city-autocomplete-1.0.0.jar</pre>
+
+            <comment>// The app should start on port 3112</comment>
+            <pre>// [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 3112 (http) with context path ''</pre>
+        </li>
+
+        <li>
+            <h4>Using docker to deploy</h4>
+            <comment> // I assume you have already created the jar from the previous step..</comment>
+            <pre>docker build -t dockerized-city-autocomplete .</pre>
+            <pre>docker run -p 3112:3112 dockerized-city-autocomplete</pre>
+            <comment> // For Linux: The app should start on http://localhost:3112 </comment>
+            <comment> // For Windows: The app should start on http://192.168.99.100:3112 </comment> </comment>
+        </li>
+
+        <li>
+            <h4>Using the docker image from docker hub</h4>
+            <pre>docker run -p 3112:3112 feken/dockerized-city-autocomplete</pre>
+            <comment> // For Linux: The app should start on http://localhost:3112 </comment>
+            <comment> // For Windows: The app should start on http://192.168.99.100:3112 </comment> </comment>
+        </li>
+    </ul>
+</div>
+<!-- Build and run ends -->
+
+<!-- Run the tests -->
+<div class="topic">
+    <h3>How to run the tests</h3>
+    <pre>gradlew test</pre>
+</div>
+<!-- Run the tests end here -->
+
+
+<div class="topic">
+    <h3> More about the algorithms </h3>
+    <ul>
+        <li>
+            Levenshtein algorithm has be used by default as a metric to measure the distance/similarity of
+            two strings. It is based on the number of modifications "add/delete/replace" we need to perform
+            on one of the strings until it is transformed to the other string. In this app, we use the normalized
+            value of Levenshtein distance
+        </li>
+        <li>
+            JaroWinkler algorithm has been also implemented since it prefers strings with common prefix. This will
+            allow the api to have different behaviors based on specific param in the GET request
+        </li>
+    </ul>
+</div>
+
+
+</body>
+</html>
