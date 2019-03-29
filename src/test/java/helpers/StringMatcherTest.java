@@ -15,7 +15,7 @@ import static org.junit.Assert.assertTrue;
 public class StringMatcherTest {
 
     @Test
-    public void TestLevenshteinDistance() {
+    public void TestLevenshteinDistanceNormalizedScore() {
         String testQueryString = "Quebec";
         String testTarget = "Québec";
         double distance = StringMatcher.levenshteinNormalizedDistanceScore(testQueryString, testTarget);
@@ -26,7 +26,7 @@ public class StringMatcherTest {
     }
 
     @Test
-    public void TestJaroMatcher() {
+    public void TestJaroMatcherScore() {
         String testQueryString = "Quebec";
         String testTarget = "Québec";
         double distance = StringMatcher.JaroWinklerDistance(testQueryString, testTarget);
@@ -34,6 +34,9 @@ public class StringMatcherTest {
 
         distance = StringMatcher.JaroWinklerDistance("rain", "shine");
         assertEquals(0.633, distance, 0.001);
+
+        distance = StringMatcher.JaroWinklerDistance("New yo", "new york city");
+        assertEquals(0.821, distance, 0.001);
 
     }
 
@@ -49,7 +52,7 @@ public class StringMatcherTest {
     }
 
     @Test
-    public void TestStingMatchersDistanceReturnsCorrectDifference() {
+    public void TestLevenshteinDistanceReturnsCorrectDifference() {
         String testQueryString = "Que";
         String testTarget = "Quebec";
         double levenDistance = StringMatcher.levenshteinDistance(testQueryString, testTarget);
@@ -73,7 +76,6 @@ public class StringMatcherTest {
         assertEquals(2, levenDistance, 0.001);
 
     }
-
 
     @Test
     public void TestStingMatchersForCompleteMismatchTerms() {

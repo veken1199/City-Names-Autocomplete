@@ -29,13 +29,13 @@ public class Constants {
     public static final String SIMILARITY_ALGO_DEFAULT_MESSAGE = "By default, the api uses Levenshtein algo. " +
             "The only accepted values is 'Jaro' for Jaro winkler algo";
 
-    public final static double EARTH_RADIUS_IN_KM = 6371;
+    public final static double EARTH_RADIUS_IN_KM = 6372.8;
 
-    public final static double  WITHIN_25_KM = 25;
-    public final static double  WITHIN_50_KM = 50;
+    public final static double  WITHIN_30_KM = 30;
+    public final static double  WITHIN_60_KM = 60;
 
-    public final static double  WITHIN_25_KM_SCORE = 0.3;
-    public final static double  WITHIN_50_KM_SCORE = 0.15;
+    public final static double  WITHIN_30_KM_SCORE = 0.3;
+    public final static double  WITHIN_60_KM_SCORE = 0.15;
     public final static double  WITHIN_ANY_RANGE_SCORE = 0;
 
     public final static String ALT_NAMES_SEPARATOR = ",";
