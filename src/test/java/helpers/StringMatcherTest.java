@@ -49,6 +49,33 @@ public class StringMatcherTest {
     }
 
     @Test
+    public void TestStingMatchersDistanceReturnsCorrectDifference() {
+        String testQueryString = "Que";
+        String testTarget = "Quebec";
+        double levenDistance = StringMatcher.levenshteinDistance(testQueryString, testTarget);
+
+        assertEquals(3, levenDistance, 0.001);
+
+        testQueryString = "Que";
+        testTarget = "QuebecTEST";
+        levenDistance = StringMatcher.levenshteinDistance(testQueryString, testTarget);
+        assertEquals(7, levenDistance, 0.001);
+
+
+        testQueryString = "new york city";
+        testTarget = "New yourCiTY";
+        levenDistance = StringMatcher.levenshteinDistance(testQueryString, testTarget);
+        assertEquals(3, levenDistance, 0.001);
+
+        testQueryString = "Gumbo            ";
+        testTarget = "Gambol";
+        levenDistance = StringMatcher.levenshteinDistance(testQueryString, testTarget);
+        assertEquals(2, levenDistance, 0.001);
+
+    }
+
+
+    @Test
     public void TestStingMatchersForCompleteMismatchTerms() {
         String testQueryString = "Quebec";
         String testTarget = "no at all";

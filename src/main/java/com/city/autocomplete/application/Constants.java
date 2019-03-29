@@ -16,8 +16,8 @@ public class Constants {
     public static final String RESPONSE_SUCCESS_MESSAGE = "Operation succeeded";
     public static final String RESPONSE_ERROR_MESSAGE = "Operation failed";
 
-    public static final int MAX_STRING_SIMILARITY_SCORE = 1;
-    public static final int MIN_STRING_SIMILARITY_SCORE = 0;
+    public static final double MAX_STRING_SIMILARITY_SCORE = 1;
+    public static final double MIN_STRING_SIMILARITY_SCORE = 0;
 
     public static final int DEFAULT_DECIMAL_PLACES = 3;
 

@@ -3,6 +3,7 @@ package com.city.autocomplete.application.helpers;
 import com.city.autocomplete.application.Constants;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class StringMatcher {
@@ -21,13 +22,20 @@ public class StringMatcher {
     }
 
     public static double levenshteinNormalizedDistanceScore(String query, String target) {
-        // check for nulls
-        if(Objects.isNull(query) || Objects.isNull(target)) return Constants.MIN_STRING_SIMILARITY_SCORE;
+        return baseMatching(query, target)
+                .orElseGet(() -> { double distance = levenshteinDistance(query, target);
+                        if(distance == 0) {
+                            return Constants.MIN_STRING_SIMILARITY_SCORE;
+                        } else {
+                            return BaseHelpers.formatDecimals(1 - (distance / Math.max(query.length(), target.length())));
+                        }
+                    });
+    }
 
-        // to lower case
-        query = query.toLowerCase();
-        target = target.toLowerCase();
-        if(query.equals(target)) return Constants.MAX_STRING_SIMILARITY_SCORE;
+    public static double levenshteinDistance(String query, String target) {
+        // not case sensitive and no spaces before or after the inputs
+        query = query.toLowerCase().trim();
+        target = target.toLowerCase().trim();
 
         // Create distance matrix
         int[][] md = new int[target.length()+1][query.length()+1];
@@ -51,22 +59,16 @@ public class StringMatcher {
         }
 
         // return the number edits normalized
-        double differenceIndex = md[target.length()][query.length()];
-
-        if(differenceIndex == 0) {
-            return Constants.MAX_STRING_SIMILARITY_SCORE;
-        } else {
-            return BaseHelpers.formatDecimals(1 - (differenceIndex / Math.max(query.length(), target.length())));
-        }
+        return md[target.length()][query.length()];
     }
 
     public static double JaroWinklerDistance(String query, String target) {
-        if(Objects.isNull(query) || Objects.isNull(target)) return Constants.MIN_STRING_SIMILARITY_SCORE;
+        Optional<Double> baseResult = baseMatching(query, target);
+        if(baseResult.isPresent())return baseResult.get();
 
-        // not case sensitive
-        query = query.toLowerCase();
-        target = target.toLowerCase();
-        if(query.equals(target)) return Constants.MAX_STRING_SIMILARITY_SCORE;
+        // not case sensitive and no spaces before or after the inputs
+        query = query.toLowerCase().trim();
+        target = target.toLowerCase().trim();
 
         // arrays to store which chars have already matched
         boolean[] queryMatches = new boolean[query.length()];
@@ -127,6 +129,22 @@ public class StringMatcher {
             if (altName.equals(query.toLowerCase())) return true;
         }
         return false;
+    }
+
+    /*
+    Helper function to check strings passed into similarity algo methods if they
+    were identical or nulls before processing them
+     */
+    private static Optional<Double> baseMatching(String query, String target) {
+        // check for nulls
+        if(Objects.isNull(query) || Objects.isNull(target)) return Optional.of(Constants.MIN_STRING_SIMILARITY_SCORE);
+
+        // not case sensitive
+        query = query.toLowerCase();
+        target = target.toLowerCase();
+
+        if(query.equals(target)) return Optional.of(Constants.MAX_STRING_SIMILARITY_SCORE);
+        return Optional.ofNullable(null);
     }
 
 }
