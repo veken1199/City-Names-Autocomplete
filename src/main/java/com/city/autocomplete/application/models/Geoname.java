@@ -11,7 +11,7 @@ public class Geoname {
     private int id;
     private String name;
     private String ascii;
-    private String alt_name;
+    private String altNames;
     private double latitude;
     private double longitude;
     private String country;
@@ -22,7 +22,7 @@ public class Geoname {
         geoname.id = Integer.parseInt(geonameData[DATA_ID_INDEX]);
         geoname.name = geonameData[DATA_NAME_INDEX];
         geoname.ascii = geonameData[DATA_ASCII_INDEX];
-        geoname.alt_name = geonameData[DATA_ALT_NAME_INDEX];
+        geoname.altNames = geonameData[DATA_ALT_NAME_INDEX];
         geoname.latitude = Double.parseDouble(geonameData[DATA_LATITUDE_INDEX]);
         geoname.longitude = Double.parseDouble(geonameData[DATA_LONGITUDE_INDEX]);
         geoname.country = geonameData[DATA_COUNTRY_INDEX];
@@ -32,7 +32,7 @@ public class Geoname {
     }
 
     public String toString() {
-        return this.id + " " + this.ascii + " " + Arrays.asList(this.alt_name.split(",")).toString() +
+        return this.id + " " + this.ascii + " " + Arrays.asList(this.altNames.split(",")).toString() +
                 this.country + " " + this.stateCode + " \n";
     }
 }

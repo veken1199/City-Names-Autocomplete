@@ -30,7 +30,7 @@ public class GeonameContainer {
         List<Suggestion> suggestions = this.Geonames.stream()
                 .map(geoname -> {
                     // we first check if the query matches alternative names
-                    double score = StringMatcher.isAlternativeName(geoname.getAlt_name(), input.getQ()) ?
+                    double score = StringMatcher.isAlternativeName(geoname.getAltNames(), input.getQ()) ?
                             Constants.MAX_STRING_SIMILARITY_SCORE : input.getSimilarityAlgo().apply(input.getQ(), geoname.getAscii());
                     if (score >= input.getMinScore()) {
                         Suggestion suggestion = Suggestion.build(geoname);

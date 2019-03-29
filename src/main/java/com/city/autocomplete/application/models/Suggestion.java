@@ -14,7 +14,7 @@ public class Suggestion implements Comparable<Suggestion> {
         Suggestion suggestion = new Suggestion();
         suggestion.name = CityNameBuilder.exec(geoname);
         suggestion.latitude = geoname.getLatitude();
-        suggestion.longitude = geoname.getLatitude();
+        suggestion.longitude = geoname.getLongitude();
         return suggestion;
     }
 

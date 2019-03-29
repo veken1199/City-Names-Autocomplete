@@ -168,4 +168,54 @@ public class SuggestionControllersIntegrationTests extends BaseContorllerIntegra
         assertTrue(resp.getBody().getSuggestions().get(0).name.contains("Amos"));
         assertTrue(resp.getBody().getSuggestions().get(0).score == 1);
     }
+
+    @Test
+    public void TestSuggestionControllerAppliesMinScoreCorrectly() {
+        ResponseEntity<ApiResponse> resp = submitRequest("/suggestion?q=quebec&minScore=0.65");
+        assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
+
+        for(Suggestion suggestion: resp.getBody().getSuggestions()) {
+            if (suggestion.name.contains("Ingersoll")) {
+                assertTrue(suggestion.score >= 0.65);
+            }
+        }
+    }
+
+    @Test
+    public void TestSuggestionControllerUsesLocationToImproveResults() {
+        // 43.03339	-80.88302 Ingersoll CA
+        // without location info
+        ResponseEntity<ApiResponse> resp = submitRequest("/suggestion?q=Ingers");
+        assertEquals(HttpStatus.OK.value(), resp.getStatusCodeValue());
+
+        Suggestion suggestionResWithoutLocation = null;
+        for(Suggestion suggestion: resp.getBody().getSuggestions()) {
+            if (suggestion.name.contains("Ingersoll")) {
+                suggestionResWithoutLocation = suggestion;
+                break;
+            }
+        }
+
+        // within 30 kn
+        ResponseEntity<ApiResponse> respWithLocation = submitRequest("/suggestion?q=Ingers&latitude=43.03339&longitude=-80.88302");
+        Suggestion suggestionResWithLocation = null;
+        for(Suggestion suggestion: respWithLocation.getBody().getSuggestions()) {
+            if (suggestion.name.contains("Ingersoll")) {
+                suggestionResWithLocation = suggestion;
+                break;
+            }
+        }
+        assertEquals(suggestionResWithLocation.score,(suggestionResWithoutLocation.score + Constants.WITHIN_30_KM_SCORE), DELTA);
+
+        // within 60km
+        respWithLocation = submitRequest("/suggestion?q=Ingers&latitude=43.53339&longitude=-80.88302");
+        suggestionResWithLocation = null;
+        for(Suggestion suggestion: respWithLocation.getBody().getSuggestions()) {
+            if (suggestion.name.contains("Ingersoll")) {
+                suggestionResWithLocation = suggestion;
+                break;
+            }
+        }
+        assertEquals(suggestionResWithLocation.score,(suggestionResWithoutLocation.score + Constants.WITHIN_60_KM_SCORE), DELTA);
+    }
 }
