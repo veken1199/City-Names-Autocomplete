@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static com.city.autocomplete.application.helpers.StringMatcher.commonPrefixLength;
 import static com.city.autocomplete.application.helpers.StringMatcher.isAlternativeName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,13 +31,13 @@ public class StringMatcherTest {
         String testQueryString = "Quebec";
         String testTarget = "Québec";
         double distance = StringMatcher.JaroWinklerDistance(testQueryString, testTarget);
-        assertEquals(0.822, distance, 0.001);
+        assertEquals(0.858, distance, 0.001);
 
         distance = StringMatcher.JaroWinklerDistance("rain", "shine");
         assertEquals(0.633, distance, 0.001);
 
         distance = StringMatcher.JaroWinklerDistance("New yo", "new york city");
-        assertEquals(0.821, distance, 0.001);
+        assertEquals(0.928, distance, 0.001);
 
     }
 
@@ -129,6 +130,15 @@ public class StringMatcherTest {
 
         assertFalse(isAlternativeName(altnames, "ردری"));
         assertFalse(isAlternativeName(altnames, "에어드"));
+    }
+
+    @Test
+    public void testCommonPrefixLength() {
+        assertEquals(0,commonPrefixLength("", "test"));
+        assertEquals(4,commonPrefixLength("test", "test"));
+        assertEquals(3,commonPrefixLength("tes", "test"));
+        assertEquals(4,commonPrefixLength("tests", "test"));
+        assertEquals(0,commonPrefixLength("tests", ""));
     }
 
 

@@ -21,7 +21,8 @@ public class Constants {
 
     public static final int DEFAULT_DECIMAL_PLACES = 3;
 
-    public static final String QUERY_DEFAULT_MESSAGE = "Search query should not be empty";
+    public static final String QUERY_DEFAULT_LENGTH_MESSAGE = "search query size must be between 1 and 20";
+    public static final String QUERY_DEFAULT_MESSAGE = "Search query should not be empty, and it should be of length 1-20";
     public static final String MIN_SCORE_DEFAULT_ERROR_MESSAGE = "minScore should be between 0 and 1";
     public static final String LATITUDE_DEFAULT_ERROR_MESSAGE = "Latitude value must be between -90 to 90.";
     public static final String LONGITUDE_DEFAULT_ERROR_MESSAGE = "Longitude value must be between -180 to 180.";
@@ -31,13 +32,14 @@ public class Constants {
 
     public final static double EARTH_RADIUS_IN_KM = 6372.8;
 
-    public final static double  WITHIN_30_KM = 30;
-    public final static double  WITHIN_60_KM = 60;
+    public final static double WITHIN_30_KM = 30;
+    public final static double WITHIN_60_KM = 60;
 
-    public final static double  WITHIN_30_KM_SCORE = 0.3;
-    public final static double  WITHIN_60_KM_SCORE = 0.15;
-    public final static double  WITHIN_ANY_RANGE_SCORE = 0;
+    public final static double WITHIN_30_KM_SCORE = 0.3;
+    public final static double WITHIN_60_KM_SCORE = 0.15;
+    public final static double WITHIN_ANY_RANGE_SCORE = 0;
 
+    public final static double WINKLER_SCALING_FACTOR = 0.1;
     public final static String ALT_NAMES_SEPARATOR = ",";
 
 }

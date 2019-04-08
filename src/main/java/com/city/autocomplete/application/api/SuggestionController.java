@@ -36,7 +36,7 @@ public class SuggestionController {
             @ApiImplicitParam(name = "similarityAlgo", value = Constants.SIMILARITY_ALGO_DEFAULT_MESSAGE, paramType = "query", dataType="string"),
     })
     @GetMapping(value="/suggestion")
-    public ApiResponse computeSuggestions(@Valid @ApiParam(Constants.LIMIT_DEFAULT_ERROR_MESSAGE) RequestInput input) {
+    public ApiResponse computeSuggestions(@Valid RequestInput input) {
         logger.info("Request has been received: " + input.toString());
         List<Suggestion> suggestions = geonameContainer.findByNameLike(input);
         return ApiResponse.buildResponse(suggestions, HttpStatus.OK.toString(), null);

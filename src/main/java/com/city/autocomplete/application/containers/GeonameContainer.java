@@ -32,15 +32,11 @@ public class GeonameContainer {
                     // we first check if the query matches alternative names
                     double score = StringMatcher.isAlternativeName(geoname.getAltNames(), input.getQ()) ?
                             Constants.MAX_STRING_SIMILARITY_SCORE : input.getSimilarityAlgo().apply(input.getQ(), geoname.getAscii());
-                    if (score >= input.getMinScore()) {
-                        Suggestion suggestion = Suggestion.build(geoname);
-                        suggestion.score = score;
-                        return suggestion;
-                    } else {
-                        return null;
-                    }
+                    Suggestion suggestion = Suggestion.build(geoname);
+                    suggestion.score = score;
+                    return suggestion;
                 })
-                .filter(Objects::nonNull)
+                .filter(suggestion -> suggestion.score >= input.getMinScore())
                 .map(suggestion -> {
                     if(Objects.nonNull(input.getLongitude()) && Objects.nonNull(input.getLatitude())) {
                         double positionScore = CoordsCalculator.calculateHaversineDistanceScore(suggestion.latitude,

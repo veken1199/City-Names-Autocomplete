@@ -9,13 +9,16 @@ import org.hibernate.validator.constraints.Range;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.function.BiFunction;
 
 public class RequestInput {
 
-    @NotNull(message = Constants.QUERY_DEFAULT_MESSAGE)
+
     @Getter
     @Setter
+    @Size(min=1, max = 20, message = Constants.QUERY_DEFAULT_LENGTH_MESSAGE)
+    @NotNull(message = Constants.QUERY_DEFAULT_MESSAGE)
     private String q;
 
     @Getter

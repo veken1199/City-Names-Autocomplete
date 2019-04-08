@@ -126,7 +126,7 @@ public class SuggestionControllersIntegrationTests extends BaseContorllerIntegra
         // using JaroWinkler algo
         ResponseEntity<ApiResponse> resp = submitRequest("/suggestion?q=Queb&similarityAlgo=Jaro");
         List<Suggestion> suggestions = resp.getBody().getSuggestions();
-        assertEquals(0.889, suggestions.get(0).score, DELTA);
+        assertEquals(0.933, suggestions.get(0).score, DELTA);
 
         // using Levenshtein
         resp = submitRequest("/suggestion?q=Queb");
@@ -152,6 +152,13 @@ public class SuggestionControllersIntegrationTests extends BaseContorllerIntegra
         ResponseEntity<ApiResponse> resp = submitRequest("/suggestion");
         assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
         assertEquals("q: " + Constants.QUERY_DEFAULT_MESSAGE, resp.getBody().getErrors().get(0));
+    }
+
+    @Test
+    public void TestSuggestionControllerQueryStringLegth() {
+        ResponseEntity<ApiResponse> resp = submitRequest("/suggestion?q=123456789101112121415161718192021");
+        assertEquals(HttpStatus.BAD_REQUEST.value(), resp.getStatusCodeValue());
+        assertEquals("q: " + Constants.QUERY_DEFAULT_LENGTH_MESSAGE, resp.getBody().getErrors().get(0));
     }
 
     @Test

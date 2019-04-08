@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import static com.city.autocomplete.application.Constants.WINKLER_SCALING_FACTOR;
+
 public class StringMatcher {
 
     /*
@@ -41,8 +43,8 @@ public class StringMatcher {
         int[][] md = new int[target.length()+1][query.length()+1];
 
         // initialize the distance matrix with indices
-        for (int row = 0; row < md[0].length; row++) md[0][row] = row;
-        for (int column = 0; column < md.length; column++) md[column][0] = column;
+        for (int column = 0; column < md[0].length; column++) md[0][column] = column;
+        for (int row = 0; row < md.length; row++) md[row][0] = row;
 
         // iterate over the query and the target to fill the rest of distance matrix
         for (int targetCharIndex = 0; targetCharIndex < target.length(); targetCharIndex++) {
@@ -51,9 +53,9 @@ public class StringMatcher {
                 if(query.charAt(queryCharIndex) == currentTargetChar) {
                     md[targetCharIndex + 1][queryCharIndex + 1] = md[targetCharIndex][queryCharIndex];
                 } else {
-                    md[targetCharIndex + 1][queryCharIndex + 1] = BaseHelpers.findMinOfNumber(md[targetCharIndex][queryCharIndex] + 1,
-                            md[targetCharIndex][queryCharIndex + 1] + 1,
-                            md[targetCharIndex + 1][queryCharIndex] + 1);
+                    md[targetCharIndex + 1][queryCharIndex + 1] = BaseHelpers.findMinOfNumber(md[targetCharIndex][queryCharIndex],
+                            md[targetCharIndex][queryCharIndex + 1],
+                            md[targetCharIndex + 1][queryCharIndex]) + 1;
                 }
             }
         }
@@ -98,7 +100,7 @@ public class StringMatcher {
                 }
             }
         }
-        if(matches == 0 ) return Constants.MIN_STRING_SIMILARITY_SCORE;
+        if(matches == 0) return Constants.MIN_STRING_SIMILARITY_SCORE;
 
         // the number of matching (but different sequence order) characters
         // divided by 2 defines the number of transpositions.
@@ -115,7 +117,10 @@ public class StringMatcher {
                 ((double)matches/target.length()) +
                 (((double)matches - transpositions/2.0))/matches));
 
-        return BaseHelpers.formatDecimals(distance);
+        // sim = distance + commonPrefixLength * ScalingFactor(1-distance)
+        int commonPrefixLength = commonPrefixLength(query, target);
+        double sim = distance + commonPrefixLength * Constants.WINKLER_SCALING_FACTOR * (1 - distance);
+        return BaseHelpers.formatDecimals(sim);
     }
 
     /*
@@ -145,6 +150,19 @@ public class StringMatcher {
 
         if(query.equals(target)) return Optional.of(Constants.MAX_STRING_SIMILARITY_SCORE);
         return Optional.ofNullable(null);
+    }
+
+    public static int commonPrefixLength(String query, String target) {
+        if(Objects.isNull(query) || Objects.isNull(target)) return 0;
+        if(query.equals(target)) return query.length();
+
+        int commonPrefixLength = 0;
+        int minStrLength = Math.min(query.length(),target.length());
+        for(int charIndex = 0; charIndex < minStrLength; charIndex++) {
+            if(query.charAt(charIndex) == target.charAt(charIndex)) commonPrefixLength ++;
+            else break;
+        }
+        return commonPrefixLength;
     }
 
 }
